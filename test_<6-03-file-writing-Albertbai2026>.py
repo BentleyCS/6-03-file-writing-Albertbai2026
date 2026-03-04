@@ -1,4 +1,4 @@
-import_unittest
+import unittest
 from CSP_6_02_reading_files import writeFile, sortNames, highScore
 
 
@@ -23,7 +23,7 @@ class TestReadingFiles(unittest.TestCase):
         # reset scores.txt so the test is predictable
         with open("scores.txt", "w") as f:
             f.write("10\n20\n30\n")
-        avg = highScore(40)  # -> 25.0
+        avg = highScore(40)  # should be (10 + 20 + 30 + 40) / 4 = 25.0
         self.assertAlmostEqual(avg, 25.0)
         with open("scores.txt", "r") as f:
             self.assertEqual(f.read(), "10\n20\n30\n40\n")
