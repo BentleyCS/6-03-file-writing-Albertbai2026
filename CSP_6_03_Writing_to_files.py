@@ -1,71 +1,74 @@
 import random
+from typing import List, Tuple
 
+def bubbleSort(items: List[int]) -> Tuple[List[int], int, int]:
+    """Sort a list using bubble sort and count swaps & comparisons."""
+    swaps = comparisons = 0
+    items = items.copy()
+    n = len(items)
+    for i in range(n - 1):
+        swapped = False
+        for j in range(0, n - i - 1):
+            comparisons += 1
+            if items[j] > items[j + 1]:
+                items[j], items[j + 1] = items[j + 1], items[j]
+                swaps += 1
+                swapped = True
+        if not swapped:
+            break
+    return items, swaps, comparisons
 
-def writeFile(inputList, fileName):
-    """
-    Creates a file and writes each list item on its own line.
-    """
-    f = open(fileName, "w")
-    for item in inputList:
-        # make sure everything is a string before writing
-        f.write(str(item) + "\n")
-    f.close()
+def insertionSort(items: List[int]) -> Tuple[List[int], int, int]:
+    """Sort a list using insertion sort and count shifts & comparisons."""
+    shifts = comparisons = 0
+    items = items.copy()
+    for i in range(1, len(items)):
+        key = items[i]
+        j = i - 1
+        while j >= 0:
+            comparisons += 1
+            if items[j] > key:
+                items[j + 1] = items[j]
+                shifts += 1
+                j -= 1
+            else:
+                break
+        items[j + 1] = key
+    return items, shifts, comparisons
 
+def selectionSort(items: List[int]) -> Tuple[List[int], int, int]:
+    """Sort a list using selection sort and count swaps & comparisons."""
+    swaps = comparisons = 0
+    items = items.copy()
+    n = len(items)
+    for i in range(n - 1):
+        min_index = i
+        for j in range(i + 1, n):
+            comparisons += 1
+            if items[j] < items[min_index]:
+                min_index = j
+        if min_index != i:
+            items[i], items[min_index] = items[min_index], items[i]
+            swaps += 1
+    return items, swaps, comparisons
 
-def sortNames(fileName, targetFile):
-    """
-    Reads names from source file, sorts them, and writes to target file.
-    """
-    # read all non-empty lines
-    f = open(fileName, "r")
-    names = []
-    for line in f:
-        name = line.strip()
-        if name != "":
-            names.append(name)
-    f.close()
-
-    # sort names alphabetically
-    names.sort()
-
-    # write sorted names to the target file
-    f = open(targetFile, "w")
-    for name in names:
-        f.write(name + "\n")
-    f.close()
-
-
-def highScore(newScore):
-    """
-    Adds newScore to scores.txt, then returns the average of all scores.
-    """
-    fileName = "scores.txt"
-
-    # open file in append mode and add the new score
-    f = open(fileName, "a")
-    f.write(str(int(newScore)) + "\n")
-    f.close()
-
-    # now read all scores back from the file
-    f = open(fileName, "r")
-    scores = []
-    for line in f:
-        line = line.strip()
-        if line != "":
-            scores.append(int(line))
-    f.close()
-
-    if len(scores) == 0:
-        return 0.0
-    else:
-        total = 0
-        for s in scores:
-            total = total + s
-        average = total / len(scores)
-        return average
-
+def printResults(name: str, result: Tuple[List[int], int, int]):
+    sorted_list, moves, comparisons = result
+    print(f"{name}:")
+    print(f"  Sorted list  = {sorted_list}")
+    print(f"  Moves        = {moves}")
+    print(f"  Comparisons  = {comparisons}\n")
 
 if __name__ == "__main__":
-    # example usage (not used by the tests)
-    sortNames("names.txt", "namesNew.txt")
-    highScore(random.randint(1, 100))
+    print("=== Worst Case (Reverse Sorted List) ===")
+    y = [9, 8, 7, 6, 5, 4, 3, 2, 1]
+    printResults("Bubble Sort",    bubbleSort(y))
+    printResults("Insertion Sort", insertionSort(y))
+    printResults("Selection Sort", selectionSort(y))
+
+    print("=== Random List ===")
+    x = list(range(50))
+    random.shuffle(x)
+    printResults("Bubble Sort",    bubbleSort(x))
+    printResults("Insertion Sort", insertionSort(x))
+    printResults("Selection Sort", selectionSort(x))
